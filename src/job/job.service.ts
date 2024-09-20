@@ -37,7 +37,7 @@ export class JobService {
     const jobs = await this.jobModel.find(filters)
       .skip(skip)
       .limit(limit)
-      .populate({ path: 'createdBy', select: 'firstName lastName email' })
+      // .populate({ path: 'createdBy', select: 'firstName lastName email' })
     const total = await this.jobModel.countDocuments(filters)
     return {
       jobs,
@@ -45,6 +45,11 @@ export class JobService {
       currentPage: currentPage,
       totalPages: Math.ceil(total / limit)
     };
+  }
+
+  async getAllForEmployer(employerId: string) {
+    const jobs = await this.jobModel.find({ createdBy: employerId })
+    return jobs
   }
 
   async create(CreateJobDto: CreateJobDto, userId: string): Promise<Job> {

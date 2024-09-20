@@ -7,7 +7,7 @@ import { Role } from 'src/auth/enums/role.enum';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @Controller('jobs')
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard(), RolesGuard)
 export class JobController {
   constructor(private readonly jobService: JobService) { }
   @Get()
@@ -18,7 +18,6 @@ export class JobController {
 
   @Post()
   @Roles(Role.Employer)
-  @UseGuards(RolesGuard)
   createNewJob(
     @Body()
     job: CreateJobDto,
@@ -29,17 +28,25 @@ export class JobController {
     return this.jobService.create(job, req.user._id);
   }
 
+  @Roles(Role.Employer, Role.Admin)
+  @Get('my-jobs')
+  getEmployersJobs(@Req() req) {
+    return this.jobService.getAllForEmployer(req.user._id)
+  }
+
   @Get(':id')
   getSinglejob(@Param('id') id: string) {
     return this.jobService.getOne(id)
   }
 
+  @Roles(Role.Employer, Role.Admin)
   @Patch(':id')
   updateJob(@Param('id') id: string, @Body() body: UpdateJobDto) {
     // console.log(id)
     return this.jobService.updateJob(id, body)
   }
 
+  @Roles(Role.Employer, Role.Admin)
   @Delete(':id')
   deleteJob(@Param('id') id: string) {
     return this.jobService.deleteOne(id)

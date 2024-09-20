@@ -1,6 +1,6 @@
 import { IsEmpty, IsEnum, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 import { User } from 'src/user/schemas/user.schema';
-import { JobType } from '../enums/job.enum';
+import { JobStatus, JobType } from '../enums/job.enum';
 
 export class CreateJobDto {
   @IsString()
@@ -10,6 +10,11 @@ export class CreateJobDto {
   @IsString()
   @IsNotEmpty()
   position: string;
+
+  @IsString()
+  @IsOptional()
+  @IsEnum(JobStatus)
+  status: string;
 
   @IsString()
   @IsOptional()
