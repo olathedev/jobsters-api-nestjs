@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { JobStatus, JobType } from '../enums/job.enum';
 
 @Schema({
   timestamps: true,
@@ -12,13 +13,16 @@ export class Job {
   @Prop({ required: true })
   position: string;
 
-  @Prop({ enum: ['interview', 'declined', 'pending'], default: 'pending' })
+  @Prop({ enum: JobStatus, default: JobStatus.OPEN })
   status: string;
 
   @Prop({ required: true })
   location: string
 
-  @Prop({ required: true })
+  @Prop({ required: true, enum: JobType })
+  jobType: JobType
+
+  @Prop()
   salaryRangeMin: number;
 
   @Prop()

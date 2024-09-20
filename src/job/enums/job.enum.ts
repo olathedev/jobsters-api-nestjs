@@ -4,3 +4,7 @@ export enum JobType {
     HYBRID = 'hybrid'
 }
 
+export enum JobStatus {
+    OPEN = 'open',
+    CLOSED = 'closed'
+}

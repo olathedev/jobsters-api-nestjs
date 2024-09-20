@@ -31,7 +31,7 @@ export class JobService {
       }
     }
 
-    const limit = query.limit || 2
+    const limit = query.limit || 20
     const currentPage = Number(query.page) || 1
     const skip = (currentPage - 1) * limit
     const jobs = await this.jobModel.find(filters)

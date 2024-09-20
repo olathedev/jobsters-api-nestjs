@@ -1,5 +1,6 @@
 import { IsEmpty, IsEnum, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 import { User } from 'src/user/schemas/user.schema';
+import { JobType } from '../enums/job.enum';
 
 export class CreateJobDto {
   @IsString()
@@ -27,6 +28,10 @@ export class CreateJobDto {
   @IsOptional()
   @Min(0)
   salaryRangeMax: number;
+
+  @IsEnum(JobType)
+  @IsNotEmpty()
+  jobType: JobType
 
   @IsString()
   @IsEmpty({ message: "you should not provvide a value for user field" })
