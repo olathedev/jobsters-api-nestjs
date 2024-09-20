@@ -1,4 +1,5 @@
-import { IsEnum, IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEmpty, IsEnum, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { User } from 'src/user/schemas/user.schema';
 
 export class CreateJobDto {
   @IsString()
@@ -10,7 +11,25 @@ export class CreateJobDto {
   position: string;
 
   @IsString()
+  @IsOptional()
+  description: string
+
+  @IsString()
   @IsNotEmpty()
+  location: string
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  salaryRangeMin: number;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  salaryRangeMax: number;
+
+  @IsString()
+  @IsEmpty({ message: "you should not provvide a value for user field" })
   @IsOptional()
   createdBy: string;
 }

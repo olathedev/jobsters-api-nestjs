@@ -12,38 +12,44 @@ export class JobService {
   async getAll(query: any): Promise<any> {
     let filters = {}
 
-    if(query.company) {
-      filters['company'] = {$regex: query.company, $options: 'i'}
+    if (query.company) {
+      filters['company'] = { $regex: query.company, $options: 'i' }
     }
-    if(query.position) {
-      filters['position'] = {$regex: query.position, $options: 'i'}
+    if (query.position) {
+      filters['position'] = { $regex: query.position, $options: 'i' }
     }
-    if(query.status) {
+    if (query.status) {
       filters['status'] = query.status
     }
-    if(query.search) {
-      filters = { $or: [
-        {company: {$regex: query.search, $options: 'i'}},
-        {position: {$regex: query.search, $options: 'i'}},
-        
-      ] }
+    if (query.search) {
+      filters = {
+        $or: [
+          { company: { $regex: query.search, $options: 'i' } },
+          { position: { $regex: query.search, $options: 'i' } },
+
+        ]
+      }
     }
 
     const limit = query.limit || 2
     const currentPage = Number(query.page) || 1
     const skip = (currentPage - 1) * limit
-    const jobs = await this.jobModel.find(filters).skip(skip).limit(limit);
+    const jobs = await this.jobModel.find(filters)
+      .skip(skip)
+      .limit(limit)
+      .populate({ path: 'createdBy', select: 'firstName lastName email' })
     const total = await this.jobModel.countDocuments(filters)
     return {
       jobs,
       total,
       currentPage: currentPage,
-      totalPages: Math.ceil(total/limit)
+      totalPages: Math.ceil(total / limit)
     };
   }
 
-  async create(CreateJobDto: CreateJobDto): Promise<Job> {
-    CreateJobDto.createdBy = '1234ryuiuh'
+  async create(CreateJobDto: CreateJobDto, userId: string): Promise<Job> {
+    CreateJobDto.createdBy = userId
+    console.log(CreateJobDto)
     const job = await this.jobModel.create(CreateJobDto);
     return job;
   }

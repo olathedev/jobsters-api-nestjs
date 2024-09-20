@@ -25,7 +25,16 @@ export class AuthService {
 
         // create a new user by calling the create user method from user service
         const user = await this.UserService.createUser(userSignupDto)
-        return user
+
+        const responseBody = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            role: user.role
+        }
+        return {
+            user: responseBody
+        }
     }
 
     async validateUser({ email, password }: { email: string, password: string }) {
@@ -38,6 +47,7 @@ export class AuthService {
             return null
         }
         return user
+        
     }
 
     async login(userLoginDto: UserLoginDto) {
@@ -49,11 +59,18 @@ export class AuthService {
             throw new UnauthorizedException("Invalid credentials")
         }
 
-        const jwtPayload = { id: user._id }
+        const jwtPayload = { sub: user._id, role: user.role }   
+        console.log(jwtPayload);
         const accessToken = this.jwtService.sign(jwtPayload)
+        const responseBody = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            role: user.role
+        }
         return {
             accessToken,
-            user,
+            user: responseBody,
             message: "Login Success"
         }
     }
